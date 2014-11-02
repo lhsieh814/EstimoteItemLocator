@@ -162,34 +162,32 @@
         ESTBeacon *beacon2 = [self.beaconsArray objectAtIndex:1];
         ESTBeacon *beacon3 = [self.beaconsArray objectAtIndex:2];
 
-        NSLog(@"\n1: %.2f , %d \n2: %.2f , %d \n3: %.2f , %d\n", [beacon1.distance floatValue], [beacon1 rssi], [beacon2.distance floatValue], [beacon2 rssi], [beacon3.distance floatValue], [beacon3 rssi]);
+        NSLog(@"\n1: %.2ld , \n2: %.2ld , \n3: %.2ld \n", (long)[beacon1 rssi], (long)[beacon2 rssi], (long)[beacon3 rssi]);
         
-        [self updatePositionForDistance:[beacon1 rssi]/-100.0f forBeacon:0];
-        [self updatePositionForDistance:[beacon2 rssi]/-100.0f forBeacon:1];
-        [self updatePositionForDistance:[beacon3 rssi]/-100.0f forBeacon:2];
+//        [self updatePositionForDistance:[beacon1 rssi]/-100.0f forBeacon:0];
+//        [self updatePositionForDistance:[beacon2 rssi]/-100.0f forBeacon:1];
+//        [self updatePositionForDistance:[beacon3 rssi]/-100.0f forBeacon:2];
+        
+//        float beacon1c = [beacon1 rssi]/-100.0f;
+//        float beacon3c = [beacon3 rssi]/-100.0f;
+        
+//        [self updatePositionForDistance:[beacon3 rssi]/-100.0f  forX:<#(int)#> forY:<#(int)#>]
     }
 }
 
 // Update UI
-- (void)updatePositionForDistance:(float)distance forBeacon:(int)index
+- (void)updatePositionForDistance:(float)distance forX:(int)xIndex forY:(int)yIndex
 {
-    NSLog(@"distance for beacon%d: %f", index, distance);
+    NSLog(@"distance for beacon%d: %d", xIndex, yIndex);
     
     float step = (self.view.frame.size.height - TOP_MARGIN) / MAX_DISTANCE;
     
     int newY = TOP_MARGIN + (distance * step);
     NSLog(@"%d", newY);
-//    switch (index) {
-//        case 0:
-//            [self.positionDot1 setCenter:CGPointMake(self.positionDot1.frame.origin.x, self.positionDot1.frame.origin.x)];
-//            break;
-//        case 1:
-//            [self.positionDot2 setCenter:CGPointMake(self.positionDot2.frame.origin.x, self.positionDot2.frame.origin.x)];
-//        case 2:
-//            [self.positionDot3 setCenter:CGPointMake(self.positionDot3.frame.origin.x, self.positionDot3.frame.origin.x)];
-//        default:
-//            break;
-//    }
+
+    [self.customer setCenter:CGPointMake(xIndex, yIndex)];
+
+    }
 }
 
 @end
