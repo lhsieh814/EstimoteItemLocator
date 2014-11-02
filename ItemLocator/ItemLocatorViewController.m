@@ -187,7 +187,6 @@
 
     [self.customer setCenter:CGPointMake(xIndex, yIndex)];
 
-    }
 }
 
 @end
