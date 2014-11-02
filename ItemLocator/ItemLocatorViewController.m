@@ -9,6 +9,12 @@
 #import "ItemLocatorViewController.h"
 #import "ESTBeaconManager.h"
 
+/*
+ * Maximum distance (in meters) from beacon for which, the dot will be visible on screen.
+ */
+#define MAX_DISTANCE 20
+#define TOP_MARGIN   150
+
 @interface ItemLocatorViewController () <ESTBeaconManagerDelegate>
 
 @property (nonatomic, copy) void (^completion)(ESTBeacon *);
@@ -21,6 +27,7 @@
 @property (nonatomic, strong) UIImageView *positionDot1;
 @property (nonatomic, strong) UIImageView *positionDot2;
 @property (nonatomic, strong) UIImageView *positionDot3;
+@property (nonatomic, strong) UIImageView *customer;
 
 @end
 
@@ -43,33 +50,35 @@
     [self.beaconManager startEstimoteBeaconsDiscoveryForRegion:self.region];
 //    [self.beaconManager requestAlwaysAuthorization];
 //    [self.beaconManager startRangingBeaconsInRegion:self.region];
-
 //    [self startRangingBeacons];
 
-    
     // UI setup
     self.backgroundImage = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"distance_bkg"]];
     self.backgroundImage.frame = [UIScreen mainScreen].bounds;
     self.backgroundImage.contentMode = UIViewContentModeScaleToFill;
-    [self.view addSubview:self.backgroundImage];
+//    [self.view addSubview:self.backgroundImage];
     
-    self.view.backgroundColor = [UIColor whiteColor];
+//    self.view.backgroundColor = [UIColor whiteColor];
     
     UIImageView *beaconImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"beacon"]];
     [beaconImageView setCenter:CGPointMake(self.view.center.x, 100)];
-    [self.view addSubview:beaconImageView];
+//    [self.view addSubview:beaconImageView];
     
-    self.positionDot1 = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"black_dot"]];
-    [self.positionDot1 setCenter:self.view.center];
+    self.positionDot1 = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"dotImage"]];
+    [self.positionDot1 setCenter:CGPointMake(self.view.frame.size.width/2, self.view.center.x)];
     [self.view addSubview:self.positionDot1];
     
-    self.positionDot2 = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"black_dot"]];
-    [self.positionDot2 setCenter:self.view.center];
+    self.positionDot2 = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"dotImage"]];
+    [self.positionDot2 setCenter:CGPointMake(self.view.frame.size.width/6, self.view.center.x)];
     [self.view addSubview:self.positionDot2];
     
-    self.positionDot3 = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"black_dot"]];
-    [self.positionDot3 setCenter:self.view.center];
+    self.positionDot3 = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"dotImage"]];
+    [self.positionDot3 setCenter:CGPointMake(self.view.frame.size.width/6*5, self.view.center.x)];
     [self.view addSubview:self.positionDot3];
+    
+    self.customer = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"dotImage"]];
+    [self.customer setCenter:CGPointMake(self.view.frame.size.width/2, self.view.frame.size.height - 30)];
+    [self.view addSubview:self.customer];
 }
 
 - (void)viewDidDisappear:(BOOL)animated
@@ -154,7 +163,33 @@
         ESTBeacon *beacon3 = [self.beaconsArray objectAtIndex:2];
 
         NSLog(@"\n1: %.2f , %d \n2: %.2f , %d \n3: %.2f , %d\n", [beacon1.distance floatValue], [beacon1 rssi], [beacon2.distance floatValue], [beacon2 rssi], [beacon3.distance floatValue], [beacon3 rssi]);
+        
+        [self updatePositionForDistance:[beacon1 rssi]/-100.0f forBeacon:0];
+        [self updatePositionForDistance:[beacon2 rssi]/-100.0f forBeacon:1];
+        [self updatePositionForDistance:[beacon3 rssi]/-100.0f forBeacon:2];
     }
+}
+
+// Update UI
+- (void)updatePositionForDistance:(float)distance forBeacon:(int)index
+{
+    NSLog(@"distance for beacon%d: %f", index, distance);
+    
+    float step = (self.view.frame.size.height - TOP_MARGIN) / MAX_DISTANCE;
+    
+    int newY = TOP_MARGIN + (distance * step);
+    NSLog(@"%d", newY);
+//    switch (index) {
+//        case 0:
+//            [self.positionDot1 setCenter:CGPointMake(self.positionDot1.frame.origin.x, self.positionDot1.frame.origin.x)];
+//            break;
+//        case 1:
+//            [self.positionDot2 setCenter:CGPointMake(self.positionDot2.frame.origin.x, self.positionDot2.frame.origin.x)];
+//        case 2:
+//            [self.positionDot3 setCenter:CGPointMake(self.positionDot3.frame.origin.x, self.positionDot3.frame.origin.x)];
+//        default:
+//            break;
+//    }
 }
 
 @end
